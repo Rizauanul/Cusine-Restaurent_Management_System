@@ -1,0 +1,23 @@
+CREATE TABLE IF NOT EXISTS `table_bookings` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `first_name` VARCHAR(50) NOT NULL,
+  `last_name` VARCHAR(50) NOT NULL,
+  `email` VARCHAR(100) NOT NULL,
+  `table_type` VARCHAR(50) NOT NULL,
+  `guest_number` INT NOT NULL,
+  `placement` VARCHAR(50) NOT NULL,
+  `booking_date` DATE NOT NULL,
+  `booking_time` TIME NOT NULL,
+  `note` TEXT NULL,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `contact_inquiries` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `first_name` VARCHAR(50) NOT NULL,
+  `last_name` VARCHAR(50) NOT NULL,
+  `email` VARCHAR(100) NOT NULL,
+  `subject` VARCHAR(150) NOT NULL,
+  `message` TEXT NOT NULL,
+  `submitted_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

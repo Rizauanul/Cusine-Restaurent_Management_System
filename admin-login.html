@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | Cuisine</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #ff6b6b;
+            --primary-hover: #ff5252;
+            --dark-color: #292f36;
+            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            --card-bg: #ffffff;
+            --text-muted: #8892b0;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: var(--bg-gradient); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+        }
+
+        .login-card { 
+            background: var(--card-bg); 
+            padding: 45px 35px; 
+            border-radius: 16px; 
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06); 
+            text-align: center; 
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .brand-logo {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 107, 107, 0.1);
+            color: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin: 0 auto 20px auto;
+        }
+
+        h2 { 
+            margin-bottom: 8px; 
+            color: var(--dark-color); 
+            font-weight: 600;
+            font-size: 24px;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        /* Input Group Styling */
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            transition: color 0.3s ease;
+        }
+
+        input { 
+            width: 100%; 
+            padding: 14px 16px 14px 45px; 
+            border: 1px solid var(--border-color); 
+            border-radius: 8px; 
+            outline: none;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+            color: var(--dark-color);
+            background: #fdfdfd;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            border-color: var(--primary-color);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.15);
+        }
+
+        input:focus + i {
+            color: var(--primary-color);
+        }
+
+        /* Button Styling */
+        button { 
+            width: 100%; 
+            padding: 14px; 
+            background: var(--primary-color); 
+            color: white; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 16px; 
+            font-weight: 500;
+            font-family: 'Poppins', sans-serif;
+            margin-top: 10px;
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        button:hover { 
+            background: var(--primary-hover); 
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        /* Error Message Alert */
+        .error-alert {
+            background: #fff5f5;
+            color: #e53e3e;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 20px;
+            border-left: 4px solid #e53e3e;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            text-align: left;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <div class="login-card">
+            <div class="brand-logo">
+                <i class="fa-solid fa-utensils"></i>
+            </div>
+            
+            <h2>Welcome Back</h2>
+            <p class="subtitle">Please enter your admin credentials</p>
+            
+            <div id="errorAlert" class="error-alert">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <span>Invalid username or password.</span>
+            </div>
+
+            <form id="loginForm">
+                <div class="input-group">
+                    <input type="text" id="username" placeholder="Username" required autocomplete="off">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                
+                <div class="input-group">
+                    <input type="password" id="password" placeholder="Password" required>
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                
+                <button type="submit">Sign In</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const user = document.getElementById('username').value.trim();
+            const pass = document.getElementById('password').value;
+            const errorAlert = document.getElementById('errorAlert');
+            
+            // Credentials Verification
+            if(user === 'admin' && pass === '12345') {
+                errorAlert.style.display = 'none';
+                sessionStorage.setItem('authToken', 'authenticated');
+                // স্মুথ ট্রানজিশনের জন্য window.location.replace ব্যবহার করা হলো
+                window.location.replace('admin.html');
+            } else {
+                // অ্যালার্ট পপআপের বদলে পেজে সুন্দর এরর মেসেজ শো করবে
+                errorAlert.style.display = 'flex';
+                
+                // ভুল পাসওয়ার্ড দিলে ইনপুট ফিল্ড ফোকাস করে পাসওয়ার্ড ক্লিয়ার করে দেবে
+                document.getElementById('password').value = '';
+                document.getElementById('password').focus();
+            }
+        });
+    </script>
+</body>
+</html>

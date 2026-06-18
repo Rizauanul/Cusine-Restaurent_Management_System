@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Management Dashboard | Cuisine Executive</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    
+    <style>
+        :root {
+            --primary: #0f172a;        /* Sleek Deep Slate */
+            --primary-light: #1e293b;  
+            --accent: #6366f1;         /* Vibrant Indigo Violet */
+            --accent-hover: #4f46e5;
+            --success: #10b981;        /* Emerald Accent for Bookings */
+            --info: #0ea5e9;           /* Sky Accent for Messages */
+            --danger: #ef4444;         /* Vibrant Crimson for Logout */
+            --danger-hover: #dc2626;
+            --bg-main: #f1f5f9;        
+            --surface: rgba(255, 255, 255, 0.85); 
+            --surface-solid: #ffffff;
+            --text-main: #0f172a;
+            --text-body: #334155;      
+            --text-muted: #64748b;     
+            --border: rgba(226, 232, 240, 0.8);        
+            --radius-xl: 16px;
+            --radius-lg: 12px;
+            --radius-md: 8px;
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.02);
+            --shadow-md: 0 10px 25px -5px rgba(15, 23, 42, 0.05), 0 8px 16px -6px rgba(15, 23, 42, 0.03);
+            --shadow-lg: 0 20px 30px -10px rgba(15, 23, 42, 0.08);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: var(--text-body);
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            background-attachment: fixed;
+        }
+        
+        .dashboard-container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+        
+        /* Premium Header Container */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--surface);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 18px 32px;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            margin-bottom: 32px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, var(--accent) 0%, #312e81 100%);
+            color: #ffffff;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+        
+        .logo h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        /* Vibrant Red Logout Button Setup */
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: var(--danger);
+            color: #ffffff;
+            border: 1px solid transparent;
+            border-radius: var(--radius-lg);
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+        }
+        
+        .logout-btn:hover {
+            transform: translateY(-1px);
+            background: var(--danger-hover);
+            box-shadow: 0 6px 16px rgba(220, 38, 38, 0.3);
+        }
+
+        /* Interactive Filter Console Panel */
+        .filter-panel {
+            background: var(--surface);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 24px 32px;
+            border-radius: var(--radius-xl);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: var(--shadow-md);
+            margin-bottom: 32px;
+        }
+
+        .filter-panel-title {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-grid {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            gap: 24px;
+        }
+
+        .input-box-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .input-box-wrapper.flex-grow {
+            flex-grow: 1;
+            min-width: 280px;
+        }
+
+        .input-box-wrapper label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .search-input-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-input-container i {
+            position: absolute;
+            left: 14px;
+            color: var(--text-muted);
+            font-size: 15px;
+        }
+
+        .control-input {
+            width: 100%;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.7);
+            padding: 11px 14px;
+            border-radius: var(--radius-lg);
+            font-family: inherit;
+            color: var(--text-main);
+            outline: none;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .search-input-container .control-input {
+            padding-left: 40px;
+        }
+
+        .control-input:focus {
+            border-color: var(--accent);
+            background: var(--surface-solid);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-secondary {
+            background: var(--surface-solid);
+            color: var(--text-body);
+            border: 1px solid var(--border);
+            padding: 11px 20px;
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.2s;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-secondary:hover {
+            background: #f8fafc;
+            color: var(--text-main);
+            border-color: var(--text-muted);
+        }
+
+        /* Colorized Metric Cards Layout */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .metric-card {
+            background: var(--surface);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 24px 28px;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .metric-info p {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .metric-info h3 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: -1px;
+        }
+
+        /* Distinct color variants for visual clarity */
+        .metric-card.bookings-variant .metric-icon {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+        
+        .metric-card.contacts-variant .metric-icon {
+            background: rgba(14, 165, 233, 0.1);
+            color: var(--info);
+        }
+
+        .metric-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        
+        /* Modern Clean Tabs Navigation Block */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            background: rgba(15, 23, 42, 0.04);
+            padding: 6px;
+            border-radius: var(--radius-xl);
+            width: fit-content;
+        }
+        
+        .tab {
+            padding: 10px 24px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-muted);
+            transition: all 0.2s ease;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+        }
+
+        .tab:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.4);
+        }
+        
+        .tab.active[data-tab="bookings"] {
+            color: var(--success);
+            background: var(--surface-solid);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .tab.active[data-tab="contacts"] {
+            color: var(--info);
+            background: var(--surface-solid);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Premium Table System Studio Layout */
+        .table-card {
+            background: var(--surface-solid);
+            border-radius: var(--radius-xl);
+            padding: 24px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+        }
+
+        table.dataTable {
+            margin-top: 16px !important;
+            border-collapse: collapse !important;
+            width: 100% !important;
+        }
+
+        th {
+            background-color: #f8fafc !important;
+            color: var(--text-main) !important;
+            font-weight: 700 !important;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            padding: 16px 18px !important;
+            border-bottom: 2px solid var(--border) !important;
+        }
+        
+        td {
+            padding: 16px 18px !important;
+            font-size: 13.5px;
+            color: var(--text-body);
+            border-bottom: 1px solid #f1f5f9 !important;
+        }
+        
+        tr:last-child td {
+            border-bottom: none !important;
+        }
+
+        tr:hover td {
+            background-color: #f8fafc !important;
+        }
+
+        /* Override DataTables Standard Look */
+        .dataTables_wrapper .dataTables_filter {
+            display: none;
+        }
+
+        .dataTables_wrapper .dataTables_length select {
+            border: 1px solid var(--border) !important;
+            border-radius: var(--radius-md) !important;
+            padding: 6px 12px !important;
+            font-size: 13px;
+            outline: none;
+            background-color: #f8fafc;
+        }
+
+        .dataTables_wrapper .dataTables_info {
+            font-size: 13px;
+            color: var(--text-muted) !important;
+            padding-top: 24px;
+            font-weight: 500;
+        }
+
+        .dataTables_wrapper .dataTables_paginate {
+            padding-top: 24px;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            padding: 8px 16px !important;
+            font-size: 13px !important;
+            font-weight: 600 !important;
+            border-radius: var(--radius-lg) !important;
+            border: 1px solid var(--border) !important;
+            background: var(--surface-solid) !important;
+            color: var(--text-body) !important;
+            margin-left: 6px;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            background: #f1f5f9 !important;
+            color: var(--text-main) !important;
+            border-color: var(--text-muted) !important;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current, 
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+            background: var(--primary) !important;
+            color: #ffffff !important;
+            border-color: var(--primary) !important;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+        }
+        
+        @media (max-width: 992px) {
+            .filter-grid { flex-direction: column; align-items: stretch; gap: 18px; }
+            .action-buttons { justify-content: flex-end; }
+            .input-box-wrapper.flex-grow { min-width: 100%; }
+            .tabs { width: 100%; justify-content: center; }
+            .tab { flex-grow: 1; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fa-solid fa-compass"></i>
+                </div>
+                <h1>Cuisine Admin Portal</h1>
+            </div>
+            <button id="logoutBtn" class="logout-btn">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+            </button>
+        </header>
+
+        <div class="filter-panel">
+            <div class="filter-panel-title">
+                <i class="fa-solid fa-sliders"></i> Filter Console
+            </div>
+            <div class="filter-grid">
+                <div class="input-box-wrapper flex-grow">
+                    <label for="emailSearch">Search by Email Address</label>
+                    <div class="search-input-container">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="email" id="emailSearch" class="control-input" placeholder="e.g. guest@domain.com">
+                    </div>
+                </div>
+                <div class="input-box-wrapper">
+                    <label for="startDate">From Date</label>
+                    <input type="date" id="startDate" class="control-input">
+                </div>
+                <div class="input-box-wrapper">
+                    <label for="endDate">To Date</label>
+                    <input type="date" id="endDate" class="control-input">
+                </div>
+                <div class="action-buttons">
+                    <button class="btn-secondary" id="clearFilterBtn">Reset Panel</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="metrics-grid">
+            <div class="metric-card bookings-variant">
+                <div class="metric-info">
+                    <p>Total Reservations</p>
+                    <h3 id="bookingCount">0</h3>
+                </div>
+                <div class="metric-icon">
+                    <i class="fa-solid fa-calendar-check"></i>
+                </div>
+            </div>
+            <div class="metric-card contacts-variant">
+                <div class="metric-info">
+                    <p>Contact Inquiries</p>
+                    <h3 id="contactCount">0</h3>
+                </div>
+                <div class="metric-icon">
+                    <i class="fa-solid fa-envelope"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tabs">
+            <div class="tab active" data-tab="bookings">
+                <i class="fa-solid fa-chair" style="margin-right: 8px;"></i> Bookings
+            </div>
+            <div class="tab" data-tab="contacts">
+                <i class="fa-solid fa-message" style="margin-right: 8px;"></i> Contact Messages
+            </div>
+        </div>
+        
+        <div class="tab-content active" id="bookingsTab">
+            <div class="table-card">
+                <table id="bookingsTable" class="display row-border hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Table Type</th>
+                            <th>Guests</th>
+                            <th>Placement</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Note</th>
+                            <th>Created At</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="contactsTab">
+            <div class="table-card">
+                <table id="contactsTable" class="display row-border hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Subject</th>
+                            <th>Message</th>
+                            <th>Received At</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    
+    <script>
+        let bookingsDataTable;
+        let contactsDataTable;
+
+        if (sessionStorage.getItem('authToken') !== 'authenticated') {
+            window.location.replace('adminlogin.html');
+        }
+        
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault(); 
+            sessionStorage.removeItem('authToken'); 
+            window.location.replace('index.html'); 
+        });
+        
+        // Custom Filtering Extension
+        $.fn.dataTable.ext.search.push(
+            function(settings, data, dataIndex) {
+                const emailQuery = document.getElementById('emailSearch').value.toLowerCase().trim();
+                const minInput = document.getElementById('startDate').value;
+                const maxInput = document.getElementById('endDate').value;
+                
+                const rowEmail = data[2] ? data[2].toLowerCase() : "";
+
+                if (emailQuery && !rowEmail.includes(emailQuery)) {
+                    return false;
+                }
+
+                if (minInput || maxInput) {
+                    let targetDateString = "";
+                    
+                    if (settings.nTable.id === 'bookingsTable') {
+                        targetDateString = data[6];
+                    } else if (settings.nTable.id === 'contactsTable') {
+                        targetDateString = data[5] ? data[5].split(" ")[0] : "";
+                    }
+
+                    if (!targetDateString) return false;
+
+                    const rowDate = new Date(targetDateString);
+                    const minDate = minInput ? new Date(minInput) : null;
+                    const maxDate = maxInput ? new Date(maxInput) : null;
+
+                    rowDate.setHours(0,0,0,0);
+                    if (minDate) minDate.setHours(0,0,0,0);
+                    if (maxDate) maxDate.setHours(0,0,0,0);
+
+                    if (minDate && rowDate < minDate) return false;
+                    if (maxDate && rowDate > maxDate) return false;
+                }
+                
+                return true;
+            }
+        );
+        
+        // Tab View Switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                this.classList.add('active');
+                const tabId = this.getAttribute('data-tab') + 'Tab';
+                document.getElementById(tabId).classList.add('active');
+                
+                if (bookingsDataTable) bookingsDataTable.columns.adjust();
+                if (contactsDataTable) contactsDataTable.columns.adjust();
+            });
+        });
+        
+        function fetchBookings() {
+            fetch('admin-api.php?action=get_bookings')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('bookingCount').innerText = data.length || 0;
+
+                    bookingsDataTable = $('#bookingsTable').DataTable({
+                        data: data,
+                        columns: [
+                            { data: 'id' },
+                            { 
+                                data: null,
+                                render: function(row) {
+                                    return `${row.first_name || ''} ${row.last_name || ''}`.trim();
+                                }
+                            },
+                            { data: 'email' },
+                            { data: 'table_type' },
+                            { data: 'guest_number' },
+                            { data: 'placement' },
+                            { data: 'booking_date' },
+                            { data: 'booking_time' },
+                            { data: 'note' },
+                            { data: 'created_at' }
+                        ],
+                        responsive: true,
+                        order: [[0, 'desc']]
+                    });
+                })
+                .catch(error => console.error('Error fetching bookings:', error));
+        }
+        
+        function fetchContacts() {
+            fetch('admin-api.php?action=get_contacts')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('contactCount').innerText = data.length || 0;
+
+                    contactsDataTable = $('#contactsTable').DataTable({
+                        data: data,
+                        columns: [
+                            { data: 'id' },
+                            { 
+                                data: null,
+                                render: function(row) {
+                                    return `${row.first_name || ''} ${row.last_name || ''}`.trim();
+                                }
+                            },
+                            { data: 'email' },
+                            { data: 'subject' },
+                            { 
+                                data: 'message',
+                                render: function(msg) {
+                                    if(!msg) return '';
+                                    return msg.length > 50 ? `<span title="${msg}">${msg.substring(0, 50)}...</span>` : msg;
+                                }
+                            },
+                            { data: 'received_at' }
+                        ],
+                        responsive: true,
+                        order: [[0, 'desc']]
+                    });
+                })
+                .catch(error => console.error('Error fetching contacts:', error));
+        }
+        
+        // Input Event Hooking
+        document.getElementById('emailSearch').addEventListener('input', () => {
+            if (bookingsDataTable) bookingsDataTable.draw();
+            if (contactsDataTable) contactsDataTable.draw();
+        });
+        
+        document.getElementById('startDate').addEventListener('change', () => {
+            if (bookingsDataTable) bookingsDataTable.draw();
+            if (contactsDataTable) contactsDataTable.draw();
+        });
+        
+        document.getElementById('endDate').addEventListener('change', () => {
+            if (bookingsDataTable) bookingsDataTable.draw();
+            if (contactsDataTable) contactsDataTable.draw();
+        });
+
+        document.getElementById('clearFilterBtn').addEventListener('click', () => {
+            document.getElementById('emailSearch').value = "";
+            document.getElementById('startDate').value = "";
+            document.getElementById('endDate').value = "";
+            if (bookingsDataTable) bookingsDataTable.draw();
+            if (contactsDataTable) contactsDataTable.draw();
+        });
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchBookings();
+            fetchContacts();
+        });
+    </script>
+</body>
+</html>
